@@ -5,5 +5,11 @@
     <bean id="memberService" class="hello.core.member.MemberServiceImpl">
         <constructor-arg name="memberRepository" ref="memberRepository"></constructor-arg>
     </bean>
-    <bean id = "memberRepoditory" class = "hello.core.member.MemoryMemberRepository"></bean>
+    <bean id = "memberRepository" class = "hello.core.member.MemoryMemberRepository"></bean>
+
+    <bean id = "orderService" class = "hello.core.order.OrderServiceImpl">
+        <constructor-arg name = "memberRepository" ref="memberRepository"></constructor-arg>
+        <constructor-arg name = "discountPolicy" ref="discountPolicy"></constructor-arg>
+    </bean>
+    <bean id = "discountPolicy" class = "hello.core.discount.RateDiscountPolicy"></bean>
 </beans>
