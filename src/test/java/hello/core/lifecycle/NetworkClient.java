@@ -30,7 +30,7 @@ public class NetworkClient
         connect();
         call("초기화 연결");
     }
-    @PreDestroyg
+    @PreDestroy
     public void close() throws Exception {
         disconnect();
     }
