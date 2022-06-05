@@ -2,15 +2,16 @@ package hello.core.scope;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+//프로토타입 빈? 매번 "사용할 때 마다" 의존관계 주입이 완료된 새로운 객체가 필요할 때 사용
 public class prototypeTest {
     @Test
     public void prototypeBeanFind(){
@@ -39,16 +40,22 @@ public class prototypeTest {
 
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
         int count2 = clientBean1.logic();
-        assertThat(count2).isEqualTo(2);
+        assertThat(count2).isEqualTo(1);
     }
 
 
     @Scope("singleton")
     static class ClientBean{
+
+        //스프링 컨테이너를 통해(스프링 컨테이너는 요청 받으면 새로 생성) 해당 빈을 찾아 반환 -> DL
+        @Autowired
+        //private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+        private Provider<PrototypeBean> prototypeBeanProvider;
+
         //private final PrototypeBean prototypeBean; //생성 시점에 주입
 
-        @Autowired
-        ApplicationContext applicationContext;
+//        @Autowired
+//        ApplicationContext applicationContext;
 
 //        public ClientBean(PrototypeBean prototypeBean){
 //            this.prototypeBean = prototypeBean;
@@ -57,7 +64,10 @@ public class prototypeTest {
         public int logic(){
             //아래처럼 하면 logic 호출 시마다 스프링 컨테이너에 PrototypeBean 생성해달라고 하는 것과 같다.
             //logic 호출 시마다 prototypeBean이 생성되기 때문에 count를 유지되게 사용할 수 없다.
-            PrototypeBean prototypeBean = applicationContext.getBean(PrototypeBean.class);
+            //PrototypeBean prototypeBean = applicationContext.getBean(PrototypeBean.class);
+
+            //PrototypeBean prototypeBean = prototypeBeanProvider.getObject();
+            PrototypeBean prototypeBean = prototypeBeanProvider.get();
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;
