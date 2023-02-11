@@ -63,7 +63,7 @@ public class TemplateMethodTest {
         };
         log.info("클래스 이름={}",templatet1.getClass());
         templatet1.execute();
-        
+
         AbstractTemplate templatet2 = new AbstractTemplate(){
             @Override
             protected void call() {
